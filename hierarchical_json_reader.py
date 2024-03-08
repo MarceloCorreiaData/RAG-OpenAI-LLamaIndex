@@ -24,7 +24,7 @@ def _depth_first_yield(
 
     """
     if isinstance(json_data, (dict, list)):
-        # only try to collapse if we're not at a leaf node
+        # Only try to collapse if we're not at a leaf node
         json_str = json.dumps(json_data, ensure_ascii=ensure_ascii)
         if collapse_length is not None and len(json_str) <= collapse_length:
             new_path = path[-levels_back:]
@@ -48,7 +48,7 @@ def _depth_first_yield(
 
 
 class HierarchicalJSONReader(BaseReader):
-    """Class JSON Reader extended to suport hierarchical metadata.
+    """Class JSON Reader extended to support hierarchical metadata.
 
     Reads JSON documents with options to help suss out relationships between nodes.
 
@@ -103,7 +103,7 @@ class HierarchicalJSONReader(BaseReader):
 
                 for subcategory, content_list in contents.items():
                     if isinstance(content_list, list):
-                        # Processa como lista
+                        # Processes as a list
                         new_subcategory = f"{category} - {subcategory}"
                         subcategories.append(new_subcategory)
 
@@ -116,7 +116,7 @@ class HierarchicalJSONReader(BaseReader):
 
                         transformed_metadata[new_subcategory] = content_list
                     elif isinstance(content_list, dict):
-                        # Processa como dicionário
+                        # Processes as a dictionary
                         for nested_subcategory, nested_content in content_list.items():
                             combined_subcategory = f"{subcategory} - {nested_subcategory}"
                             subcategories.append(combined_subcategory)
@@ -156,16 +156,16 @@ class HierarchicalJSONReader(BaseReader):
 
         for idx, (data, metadata, relationships) in enumerate(zip(transformed_data, metadata_list, relationships_list)):
             if self.levels_back is None:
-                # Mantém a formatação do JSONReader original no texto do documento
+                # Keeps the formatting of the original JSONReader in the document text
                 json_output = json.dumps(data, indent=1, ensure_ascii=self.ensure_ascii)
                 json_output = json_output.replace("\n  ", "\n").replace("\n ", "\n")
                 
-                # Itera sobre cada categoria
+                # Iterates over each category
                 for category in metadata['categories']:
-                    # Filtra subcategorias para a categoria atual
+                    # Filters subcategories for the current category
                     related_subcategories = [sc for sc in metadata['subcategories'] if sc.startswith(f"{category} -")]
 
-                    # Criação do documento da categoria (root node)
+                    # Creation of the category document (root node)
                     category_doc = Document(
                         text=category,
                         metadata={"category": category, "subcategories": related_subcategories},
@@ -173,13 +173,13 @@ class HierarchicalJSONReader(BaseReader):
                     )
                     documents.append(category_doc)
 
-                    # Itera pelas subcategorias filtradas e conteúdos associados à categoria
+                    # Iterates through the filtered subcategories and contents associated with the category
                     for subcategory in related_subcategories:
                         contents = data.get(subcategory, [])
                         contents_text = json.dumps(contents, ensure_ascii=self.ensure_ascii, indent=1)
                         subcategory_text = f"{subcategory}: {contents_text}"
 
-                        # Criação do documento da subcategoria com conteúdos
+                        # Creation of the subcategory document with contents
                         subcategory_doc = Document(
                             text=subcategory_text,
                             metadata={"category": category, "subcategory": subcategory},
@@ -188,7 +188,7 @@ class HierarchicalJSONReader(BaseReader):
                         documents.append(subcategory_doc)                            
                             
             else:
-                # Se self.levels_back for definido, processe de forma diferente
+                # If self.levels_back is set, process differently
                 lines = [
                     *_depth_first_yield(data, self.levels_back, self.collapse_length, [], self.ensure_ascii)
                 ]
