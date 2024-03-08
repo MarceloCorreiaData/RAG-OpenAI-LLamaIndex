@@ -1,5 +1,5 @@
 # RAG-OpenAI-LLamaIndex
-RAG Vector Store using Open Soucer and OpenAI LLMs on LlamaIndex Langchain
+RAG Vector Store using Open Soucer and OpenAI LLMs on LlamaIndex Langchain. \
 It comprehends the creation of a new Reader Class.
 
 The HierarchicalJSONReader class, derived from BaseReader, is designed to parse JSON files, including both dictionaries and lists of concatenated JSON dictionaries. It constructs a hierarchical document structure that mirrors the JSON tree, translating the key-value pairs (and lists) into a structured format. This structure is organized into root nodes, branch nodes, and leaf nodes, which are categorized as categories and subcategories within the documents. The class facilitates the extraction of complex relationships and metadata from JSON documents, enabling detailed analysis and representation of the data in accordance with its inherent hierarchical organization.
